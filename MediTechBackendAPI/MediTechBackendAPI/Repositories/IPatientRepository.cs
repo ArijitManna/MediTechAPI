@@ -12,5 +12,7 @@ namespace MediTechBackendAPI.Repositories
         Task<IEnumerable<Notification>> GetNotificationsAsync(int patientId);
         Task<IEnumerable<Appointment>> GetAppointmentsAsync(int patientId);
         Task<IEnumerable<Dependent>> GetDependantsAsync(int patientId);
+        Task<IEnumerable<MedicalRecord>> GetMedicalRecordsAsync(int patientId);
+        Task<IEnumerable<Prescription>> GetPrescriptionsAsync(int patientId);
     }
 }

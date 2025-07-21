@@ -124,5 +124,39 @@ namespace MediTechBackendAPI.Repositories
             };
             return Task.FromResult<IEnumerable<Dependent>>(list);
         }
+
+        public Task<IEnumerable<MedicalRecord>> GetMedicalRecordsAsync(int patientId)
+        {
+            var list = new List<MedicalRecord>
+            {
+                new MedicalRecord
+                {
+                    Id = 1,
+                    PatientId = patientId,
+                    Name = "Dr. Peter Griffin",
+                    Date = DateTime.UtcNow.AddDays(-2),
+                    RecordFor = "Laboratory",
+                    Comments = "Blood work normal",
+                    FileUrl = "https://example.com/record1.pdf"
+                }
+            };
+            return Task.FromResult<IEnumerable<MedicalRecord>>(list);
+        }
+
+        public Task<IEnumerable<Prescription>> GetPrescriptionsAsync(int patientId)
+        {
+            var list = new List<Prescription>
+            {
+                new Prescription
+                {
+                    Id = 1,
+                    PatientId = patientId,
+                    Name = "Ibuprofen",
+                    CreatedDate = DateTime.UtcNow.AddDays(-7),
+                    PrescribedBy = "Dr. Peter Griffin"
+                }
+            };
+            return Task.FromResult<IEnumerable<Prescription>>(list);
+        }
     }
 }

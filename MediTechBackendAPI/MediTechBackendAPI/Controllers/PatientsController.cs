@@ -60,5 +60,19 @@ namespace MediTechBackendAPI.Controllers
             var list = await _repository.GetDependantsAsync(id);
             return Ok(list);
         }
+
+        [HttpGet("{id}/medical-records")]
+        public async Task<ActionResult<IEnumerable<MedicalRecord>>> GetMedicalRecords(int id)
+        {
+            var list = await _repository.GetMedicalRecordsAsync(id);
+            return Ok(list);
+        }
+
+        [HttpGet("{id}/prescriptions")]
+        public async Task<ActionResult<IEnumerable<Prescription>>> GetPrescriptions(int id)
+        {
+            var list = await _repository.GetPrescriptionsAsync(id);
+            return Ok(list);
+        }
     }
 }
