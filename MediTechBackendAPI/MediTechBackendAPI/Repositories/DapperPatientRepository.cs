@@ -47,5 +47,15 @@ namespace MediTechBackendAPI.Repositories
         {
             throw new System.NotImplementedException();
         }
+
+        public Task<IEnumerable<MedicalRecord>> GetMedicalRecordsAsync(int patientId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<IEnumerable<Prescription>> GetPrescriptionsAsync(int patientId)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
