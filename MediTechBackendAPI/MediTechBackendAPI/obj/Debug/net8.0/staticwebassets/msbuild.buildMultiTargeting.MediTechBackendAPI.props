@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\MediTechBackendAPI.props" />
-</Project>
