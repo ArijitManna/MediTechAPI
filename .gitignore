@@ -1,0 +1,25 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/MediTechBackendAPI/.vs/MediTechBackendAPI/CopilotIndices/17.14.878.3237
+/MediTechBackendAPI/.vs/MediTechBackendAPI/DesignTimeBuild
+/MediTechBackendAPI/.vs/MediTechBackendAPI/FileContentIndex
+/MediTechBackendAPI/.vs/MediTechBackendAPI/v17
+/MediTechBackendAPI/MediTechBackendAPI/bin/Debug/net8.0/de
+/MediTechBackendAPI/MediTechBackendAPI/bin/Debug/net8.0/es
+/MediTechBackendAPI/MediTechBackendAPI/bin/Debug/net8.0/fr
+/MediTechBackendAPI/MediTechBackendAPI/bin/Debug/net8.0/it
+/MediTechBackendAPI/MediTechBackendAPI/bin/Debug/net8.0/zh-Hant
+/MediTechBackendAPI/MediTechBackendAPI/bin/Debug/net8.0/zh-Hans
+/MediTechBackendAPI/MediTechBackendAPI/bin/Debug/net8.0/runtimes
+/MediTechBackendAPI/MediTechBackendAPI/bin/Debug/net8.0/ja
+/MediTechBackendAPI/MediTechBackendAPI/bin/Debug/net8.0/ko
+/MediTechBackendAPI/MediTechBackendAPI/bin/Debug/net8.0/pt-BR
+/MediTechBackendAPI/MediTechBackendAPI/bin/Debug/net8.0/ru
+/MediTechBackendAPI/MediTechBackendAPI/obj/Debug/net8.0
+/MediTechBackendAPI/MediTechBackendAPI/obj
+/MediTechBackendAPI/MediTechBackendAPI/bin/Debug/net8.0/appsettings.json
+/MediTechBackendAPI/MediTechBackendAPI/bin/Debug/net8.0
+/MediTechBackendAPI/.vs/MediTechBackendAPI/config/applicationhost.config
