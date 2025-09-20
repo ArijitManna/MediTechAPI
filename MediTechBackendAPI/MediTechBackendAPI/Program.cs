@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using MediTechBackendAPI.Repositories;
@@ -7,6 +10,27 @@ using MediTechBackendAPI.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// Add JWT Authentication
+var jwtKey = builder.Configuration["Jwt:Key"];
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtIssuer,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+    };
+});
 
 builder.Services.AddControllers();
 
@@ -31,6 +55,8 @@ builder.Services.AddScoped<IPatientRegistrationRepository, PatientRegistrationRe
 // Configure Email Settings
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<MediTechBackendAPI.Helpers.JwtTokenHelper>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -48,7 +74,10 @@ app.UseHttpsRedirection();
 
 // Use CORS
 app.UseCors("AllowReactApp");
+// Use API Secret Key Middleware
+app.UseMiddleware<MediTechBackendAPI.Middleware.ApiSecretKeyMiddleware>();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

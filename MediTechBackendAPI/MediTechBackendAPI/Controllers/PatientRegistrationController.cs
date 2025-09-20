@@ -25,7 +25,7 @@ namespace MediTechBackendAPI.Controllers
 				return BadRequest(ApiResponse<PatientRegistrationResponse>.Failure("Registration data is required"));
 			}
 
-			if (string.IsNullOrWhiteSpace(registration.CountryCode) || string.IsNullOrWhiteSpace(registration.MobileNumber))
+			if (string.IsNullOrWhiteSpace(registration.MobileNumber))
 			{
 				return BadRequest(ApiResponse<PatientRegistrationResponse>.Failure("CountryCode and MobileNumber are required"));
 			}

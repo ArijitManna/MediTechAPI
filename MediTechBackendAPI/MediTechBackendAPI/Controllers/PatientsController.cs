@@ -1,8 +1,13 @@
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MediTechBackendAPI.Models;
 using MediTechBackendAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Linq;
+using System.Security.Claims;
 
 namespace MediTechBackendAPI.Controllers
 {
@@ -73,6 +78,21 @@ namespace MediTechBackendAPI.Controllers
         {
             var list = await _repository.GetPrescriptionsAsync(id);
             return Ok(list);
+        }
+
+        // New endpoint: GET api/Patients/dashboard-details (JWT required)
+        [HttpGet("dashboard-details")]
+        [Authorize]
+        public async Task<ActionResult<Models.PatientDemographyDashboardDetails>> GetPatientDemographyDashboardDetails()
+        {
+            var pidClaim = User.Claims.FirstOrDefault(c => c.Type == "PID");
+            if (pidClaim == null || !Guid.TryParse(pidClaim.Value, out var pid))
+            {
+                return Unauthorized("PID not found in token");
+            }
+            var details = await _repository.GetPatientDemographyDashboardDetailsAsync(pid);
+            if (details == null) return NotFound();
+            return Ok(details);
         }
     }
 }

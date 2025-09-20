@@ -4,7 +4,7 @@ namespace MediTechBackendAPI.Models
 {
 	public class PatientRegistration
 	{
-		public string CountryCode { get; set; } = string.Empty;
+		public string? CountryCode { get; set; } = string.Empty;
 		public string MobileNumber { get; set; } = string.Empty;
 		public string? EmailID { get; set; }
 		public string? FirstName { get; set; }
