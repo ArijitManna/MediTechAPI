@@ -20,7 +20,28 @@ namespace MediTechBackendAPI.Controllers
             _patientRepository = patientRepository;
         }
 
-        // POST: api/Dependents
+
+        // POST: api/Dependents/bulk
+        [HttpPost("bulk")]
+        public async Task<IActionResult> InsertOrUpdateDependents([FromBody] BulkDependentsRequest request)
+        {
+            var pidClaim = User.FindFirst("PID")?.Value;
+            if (pidClaim == null || !Guid.TryParse(pidClaim, out Guid userPid))
+                return Unauthorized();
+
+            if (string.IsNullOrEmpty(request.PID) || !Guid.TryParse(request.PID, out Guid pid))
+                return BadRequest(new { message = "Invalid or missing PID in request body." });
+
+            if (request.Dependents == null)
+                return BadRequest(new { message = "Dependents list is required." });
+
+            var result = await _patientRepository.InsertOrUpdateDependentsAsync(pid, request.PID, request.Created_by, request.Dependents);
+            if (result)
+                return Ok(new { message = "Dependents inserted/updated successfully." });
+            return BadRequest(new { message = "Failed to insert/update dependents." });
+        }
+
+        // For backward compatibility, keep single insert endpoint
         [HttpPost]
         public async Task<IActionResult> InsertDependent([FromBody] Dependent dependent)
         {
@@ -33,6 +54,13 @@ namespace MediTechBackendAPI.Controllers
             if (result)
                 return Ok(new { message = "Dependent inserted successfully." });
             return BadRequest(new { message = "Failed to insert dependent." });
+        }
+
+        public class BulkDependentsRequest
+        {
+            public string PID { get; set; }
+            public string Created_by { get; set; }
+            public System.Collections.Generic.List<Dependent> Dependents { get; set; }
         }
 
         // GET: api/Dependents

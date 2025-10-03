@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Dapper;
 using MediTechBackendAPI.Models;
@@ -15,24 +16,59 @@ namespace MediTechBackendAPI.Repositories
         {
             _connection = connection;
         }
+
         public async Task<bool> InsertDependentAsync(Dependent dependent)
         {
-            var parameters = new DynamicParameters();
-            parameters.Add("@PID", dependent.PID);
-            parameters.Add("@PatientID", dependent.PatientID);
-            parameters.Add("@First_Name", dependent.First_Name);
-            parameters.Add("@Middle_Name", dependent.Middle_Name);
-            parameters.Add("@Last_Name", dependent.Last_Name);
-            parameters.Add("@Age", dependent.Age);
-            parameters.Add("@RelationshipID", dependent.RelationshipID);
-            parameters.Add("@Created_by", dependent.Created_by);
-
-            var rows = await _connection.ExecuteAsync(
-                "[purojit2_emeditechppo].[USP_Insert_DependentFamilyMember]",
-                parameters,
-                commandType: CommandType.StoredProcedure
+            // For backward compatibility, wrap single dependent in a list and call bulk method
+            return await InsertOrUpdateDependentsAsync(
+                dependent.PID,
+                dependent.PatientID,
+                dependent.Created_by,
+                new List<Dependent> { dependent }
             );
-            return rows > 0;
+        }
+
+        public async Task<bool> InsertOrUpdateDependentsAsync(System.Guid pid, string patientId, string createdBy, IEnumerable<Dependent> dependents)
+        {
+            try
+            {
+                var dt = new System.Data.DataTable();
+                dt.Columns.Add("Dependent_ID", typeof(System.Guid));
+                dt.Columns.Add("First_Name", typeof(string));
+                dt.Columns.Add("Middle_Name", typeof(string));
+                dt.Columns.Add("Last_Name", typeof(string));
+                dt.Columns.Add("Age", typeof(Int32));
+                dt.Columns.Add("RelationshipID", typeof(int));
+
+                foreach (var d in dependents)
+                {
+                    dt.Rows.Add(
+                        d.Dependent_ID == null ? (object)DBNull.Value : d.Dependent_ID,
+                        d.First_Name ?? string.Empty,
+                        d.Middle_Name ?? string.Empty,
+                        d.Last_Name ?? string.Empty,
+                        d.Age,
+                        d.RelationshipID
+                    );
+                }
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@PID", pid);
+                parameters.Add("@patientID", patientId);
+                parameters.Add("@Created_by", createdBy);
+                parameters.Add("@Dependents", dt.AsTableValuedParameter("[purojit2_emeditechppo].[UDT_DependentFamilyMembers]"));
+
+                var rows = await _connection.ExecuteAsync(
+                    "[purojit2_emeditechppo].[USP_InsertOrUpdate_DependentFamilyMembers]",
+                    parameters,
+                    commandType: CommandType.StoredProcedure
+                );
+                return rows > 0;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
         }
 
         public async Task<IEnumerable<Dependent>> GetDependentsAsync(System.Guid pid)
@@ -47,6 +83,8 @@ namespace MediTechBackendAPI.Repositories
             );
             return dependents;
         }
+        
+        
 
         // TODO: Replace the following methods with actual stored procedure calls
         public Task<Patient?> GetPatientAsync(int patientId)

@@ -15,7 +15,8 @@ namespace MediTechBackendAPI.Repositories
         Task<IEnumerable<MedicalRecord>> GetMedicalRecordsAsync(int patientId);
         Task<IEnumerable<Prescription>> GetPrescriptionsAsync(int patientId);
         Task<PatientDemographyDashboardDetails?> GetPatientDemographyDashboardDetailsAsync(System.Guid pid);
-        Task<bool> InsertDependentAsync(Dependent dependent);
+    Task<bool> InsertDependentAsync(Dependent dependent);
+    Task<bool> InsertOrUpdateDependentsAsync(System.Guid pid, string patientId, string createdBy, IEnumerable<Dependent> dependents);
         Task<IEnumerable<Dependent>> GetDependentsAsync(System.Guid pid);
     }
 }
