@@ -14,6 +14,7 @@ namespace MediTechBackendAPI.Models
         public System.DateTime? D_Created_At { get; set; }
     public string? Modified_by { get; set; }
     public System.DateTime? D_Modified_At { get; set; }
+    public string? Status { get; set; }
     public string? ImageUrl { get; set; }
     }
 }

@@ -18,5 +18,7 @@ namespace MediTechBackendAPI.Repositories
     Task<bool> InsertDependentAsync(Dependent dependent);
     Task<bool> InsertOrUpdateDependentsAsync(System.Guid pid, string patientId, string createdBy, IEnumerable<Dependent> dependents);
         Task<IEnumerable<Dependent>> GetDependentsAsync(System.Guid pid);
+        Task<(bool Success, string Message)> UpdateDependentStatusAsync(System.Guid dependentId, string updatedBy, bool status);
+        Task<(bool Success, string Message)> DeleteDependentAsync(System.Guid dependentId, string deletedBy);
     }
 }

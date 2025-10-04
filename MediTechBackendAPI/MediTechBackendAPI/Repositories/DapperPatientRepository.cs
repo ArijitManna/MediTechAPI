@@ -52,20 +52,24 @@ namespace MediTechBackendAPI.Repositories
                     );
                 }
 
-                var parameters = new DynamicParameters();
-                parameters.Add("@PID", pid);
-                parameters.Add("@patientID", patientId);
-                parameters.Add("@Created_by", createdBy);
-                parameters.Add("@Dependents", dt.AsTableValuedParameter("[purojit2_emeditechppo].[UDT_DependentFamilyMembers]"));
-
-                var rows = await _connection.ExecuteAsync(
+                var result = await _connection.QuerySingleAsync<dynamic>(
                     "[purojit2_emeditechppo].[USP_InsertOrUpdate_DependentFamilyMembers]",
-                    parameters,
+                    new
+                    {
+                        PID = pid,
+                        patientID = patientId,
+                        Created_by = createdBy,
+                        Dependents = dt.AsTableValuedParameter("[purojit2_emeditechppo].[UDT_DependentFamilyMembers]")
+                    },
                     commandType: CommandType.StoredProcedure
                 );
-                return rows > 0;
+
+                Console.WriteLine(result.Message);
+
+                // Now you know exactly what happened
+                return (result.InsertedCount + result.UpdatedCount) > 0;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 return false;
             }
@@ -137,6 +141,53 @@ namespace MediTechBackendAPI.Repositories
                 parameters,
                 commandType: System.Data.CommandType.StoredProcedure);
             return result;
+        }
+
+        public async Task<(bool Success, string Message)> UpdateDependentStatusAsync(System.Guid dependentId, string updatedBy, bool status)
+        {
+            try
+            {
+                var result = await _connection.QuerySingleAsync<dynamic>(
+                    "[purojit2_emeditechppo].[USP_Update_DependentFamilyMemberStatus]",
+                    new
+                    {
+                        DependentID = dependentId,
+                        UpdatedBy = updatedBy,
+                        Status = status
+                    },
+                    commandType: CommandType.StoredProcedure
+                );
+
+                bool success = result.RowsAffected > 0;
+                return (success, result.Message);
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error: {ex.Message}");
+            }
+        }
+
+        public async Task<(bool Success, string Message)> DeleteDependentAsync(System.Guid dependentId, string deletedBy)
+        {
+            try
+            {
+                var result = await _connection.QuerySingleAsync<dynamic>(
+                    "[purojit2_emeditechppo].[USP_Delete_DependentFamilyMember]",
+                    new
+                    {
+                        DependentID = dependentId,
+                        DeletedBy = deletedBy
+                    },
+                    commandType: CommandType.StoredProcedure
+                );
+
+                bool success = result.RowsAffected > 0;
+                return (success, result.Message);
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error: {ex.Message}");
+            }
         }
     }
 }

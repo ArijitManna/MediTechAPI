@@ -125,6 +125,18 @@ namespace MediTechBackendAPI.Repositories
 		{
 			return Task.FromResult(true);
 		}
+
+		public Task<(bool Success, string Message)> UpdateDependentStatusAsync(System.Guid dependentId, string updatedBy, bool status)
+		{
+			// Dummy implementation - always returns success
+			return Task.FromResult((true, "Status updated successfully"));
+		}
+
+		public Task<(bool Success, string Message)> DeleteDependentAsync(System.Guid dependentId, string deletedBy)
+		{
+			// Dummy implementation - always returns success
+			return Task.FromResult((true, "Dependent marked as deleted successfully"));
+		}
 	}
 }
 
